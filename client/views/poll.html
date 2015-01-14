@@ -1,0 +1,61 @@
+<template name="pollView">
+  
+  {{#if isOwner poll._id currentUser}}
+  <h3>Poll: <input type="text" size=100 class="pollTitle" value="{{poll.title}}"></h3>
+  <div class="poll-controls pull-right">
+    <button class="btn btn-success add-choice">Add Choice <span class="glyphicon glyphicon-plus-sign remove-choice"></span></button>
+    <button class="btn btn-warning clear-all-responses">Clear All Responses <span class="glyphicon glyphicon-minus-sign remove-choice"></span></button>
+    <button class="btn btn-danger delete-poll">Delete Poll <span class="glyphicon glyphicon-remove-sign"></span></button>
+  </div>
+  {{else}}
+    <h3>Poll: {{poll.title}}</h3>
+  {{/if}}
+  {{#if myResponse poll._id currentUser}}
+  <h4>Your Response: {{myResponse poll._id currentUser}} <button class="btn btn-warning btn-xs clear-response">Clear My Response</button></h4>
+  {{/if}} {{#if isOwner poll._id currentUser}}
+  <div class="col-md-6 poll-stats">
+    {{> pollsterTips}} {{> pollStats}} {{> pollQR}}
+  </div>
+  {{/if}}
+
+  <div class="choices {{#if isOwner poll._id currentUser}}col-md-6{{/if}}">
+    {{#each choices}} {{> choice}} {{/each}}
+  </div>
+
+</template>
+
+<template name="choice">
+  
+    
+    {{#if isOwner poll currentUser}}
+  <div class="row">
+    <span class="glyphicon glyphicon-remove-sign remove-choice"></span>
+    <input class="choice-text" type="text" size=50 value="{{text}}">
+    <div class="choice" id="{{_id}}" style="{{#if responsePercent _id poll}}background: linear-gradient(to right, {{color}} {{responsePercent _id poll}}%, white {{responsePercent _id poll}}%);{{/if}}">
+    {{responsePercent _id poll}}%
+    </div>
+    </div>
+    {{else}}
+  <div class="choice" id="{{_id}}" style="{{#if responsePercent _id poll}}background: linear-gradient(to right, {{color}} {{responsePercent _id poll}}%, white {{responsePercent _id poll}}%);{{/if}}">
+    <span id="{{_id}}">{{text}}</span>
+    </div>
+    {{/if}}
+  
+</template>
+
+<template name="pollsterTips">
+  <h4>Tips & Tricks</h4>
+  <ul>
+    <li>Click/tap on a choice's text to edit it (this works for the poll title, too!)</li>
+  </ul>
+</template>
+
+<template name="pollStats">
+  <h4>Poll Stats</h4>
+  <h5>Total Responses: {{pollResponsesTotal ../poll}}</h5>
+</template>
+
+<template name="pollQR">
+  <h4>Poll QR Code</h4>
+  <div id="qr"></div>
+</template>
